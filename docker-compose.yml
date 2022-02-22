@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  radix-batch-scheduler:
+    build: .
+    environment:
+      - RADIX_APP=example-app
+      - RADIX_COMPONENT=image-builder
+      - RADIX_DEPLOYMENT=image-builder-abc
+      - RADIX_BATCH_NAME=test-batch1
+    volumes:
+      - type: bind
+        source: ~/tmp/job/batch/description
+        target: /mnt/description

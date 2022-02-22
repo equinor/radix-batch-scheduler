@@ -4,10 +4,14 @@ ENV GO111MODULE=on
 RUN addgroup -S -g 1000 batch-scheduler \
  && adduser -S -u 1000 -G batch-scheduler batch-scheduler
 
-RUN apk update && \
-    apk add bash jq alpine-sdk sed gawk git ca-certificates curl && \
+RUN apk update && apk upgrade
+RUN apk add bash jq alpine-sdk sed gawk git ca-certificates curl && \
     apk add --no-cache gcc musl-dev && \
-    go get -u golang.org/x/lint/golint &&
+    go get -u golang.org/x/lint/golint
+
+
+WORKDIR /home/user1/go/src/github.com/equinor
+RUN git clone https://github.com/equinor/radix-job-scheduler.git
 
 WORKDIR /go/src/github.com/equinor/radix-batch-scheduler/
 

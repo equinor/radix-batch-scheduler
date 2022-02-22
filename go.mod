@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/equinor/radix-common v1.1.10
 	github.com/equinor/radix-job-scheduler v1.4.2
+	github.com/equinor/radix-operator v1.19.3
 	github.com/sirupsen/logrus v1.8.1
 )
 
@@ -12,7 +13,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/equinor/radix-operator v1.19.3 // indirect
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.6.0 // indirect
