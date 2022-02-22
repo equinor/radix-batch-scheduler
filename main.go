@@ -13,7 +13,7 @@ func main() {
 		return
 	}
 
-	log.Infof("Start the batch %s for the component: %s, deployment: %s", env.BatchName, env.Common.RadixComponentName,
+	log.Infof("Start the batch '%s' for the component: '%s', deployment: '%s'", env.BatchName, env.Common.RadixComponentName,
 		env.Common.RadixDeploymentName)
 
 	//kubeClient, radixClient, _, secretProviderClient := utils.GetKubernetesClient()

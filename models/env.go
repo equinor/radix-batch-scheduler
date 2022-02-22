@@ -28,9 +28,9 @@ func (env *Env) ValidateExpected() error {
 	if len(env.BatchName) == 0 {
 		errs = append(errs, fmt.Errorf("missed environment variable RADIX_BATCH_NAME"))
 	}
-	//if len(env.Common.RadixAppName) == 0 {
-	//    errs = append(errs, fmt.Errorf("missed environment variable RADIX_APP"))
-	//}
+	if len(env.Common.RadixAppName) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIX_APP"))
+	}
 	if len(env.Common.RadixComponentName) == 0 {
 		errs = append(errs, fmt.Errorf("missed environment variable RADIX_COMPONENT"))
 	}
