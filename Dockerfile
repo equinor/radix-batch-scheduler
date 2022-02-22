@@ -9,7 +9,6 @@ RUN apk add bash jq alpine-sdk sed gawk git ca-certificates curl && \
     apk add --no-cache gcc musl-dev && \
     go get -u golang.org/x/lint/golint
 
-
 #TODO For dev only - remove
 WORKDIR /home/user1/go/src/github.com/equinor
 RUN git clone -b 183988-batch-job-scheduler https://github.com/equinor/radix-job-scheduler.git
@@ -32,10 +31,12 @@ COPY . .
 # Build radix api go project
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -a -installsuffix cgo -o /usr/local/bin/radix-batch-scheduler
 
-FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /usr/local/bin/radix-batch-scheduler /usr/local/bin/radix-batch-scheduler
+#TODO restore after dev
+#FROM scratch
+#COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+#COPY --from=builder /etc/passwd /etc/passwd
+#COPY --from=builder /usr/local/bin/radix-batch-scheduler /usr/local/bin/radix-batch-scheduler
 
 USER 1000
+
 ENTRYPOINT ["/usr/local/bin/radix-batch-scheduler"]
