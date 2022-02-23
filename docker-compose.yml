@@ -4,10 +4,16 @@ services:
   radix-batch-scheduler:
     build: .
     environment:
-      - RADIX_APP=example-app
+      - RADIX_APP=radix-job-example-satr
+      - RADIX_ENVIRONMENT=dev
       - RADIX_COMPONENT=image-builder
-      - RADIX_DEPLOYMENT=image-builder-abc
+      - RADIX_DEPLOYMENT=dev-gu8oa-qgpv1pli
+      - RADIX_DNS_ZONE=dev.radix.equinor.com
+      - RADIX_CONTAINER_REGISTRY=radixdev.azurecr.io
+      - RADIX_CLUSTERNAME=weekly-07
+      - RADIX_ACTIVE_CLUSTER_EGRESS_IPS=127.0.0.1
       - RADIX_BATCH_NAME=test-batch1
+      - RADIX_BATCH_SCHEDULE_DESCRIPTION_PATH=/mnt/secrets/test-batch1
     volumes:
       - type: bind
         source: ~/tmp/job/batch/description

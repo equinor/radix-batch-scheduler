@@ -10,21 +10,26 @@ import (
 
 // Env instance variables
 type Env struct {
-	Common    *models.Env
-	BatchName string
+	Common                       *models.Env
+	BatchName                    string
+	BatchScheduleDescriptionPath string
 }
 
 //New Constructor of Env
 func New() *Env {
 	return &Env{
-		Common:    models.NewEnv(),
-		BatchName: os.Getenv("RADIX_BATCH_NAME"),
+		Common:                       models.NewEnv(),
+		BatchName:                    os.Getenv("RADIX_BATCH_NAME"),
+		BatchScheduleDescriptionPath: os.Getenv("RADIX_BATCH_SCHEDULE_DESCRIPTION_PATH"),
 	}
 }
 
 //ValidateExpected ValidateExpected environment variables
 func (env *Env) ValidateExpected() error {
 	var errs []error
+	if len(env.BatchScheduleDescriptionPath) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIX_BATCH_SCHEDULE_DESCRIPTION_PATH"))
+	}
 	if len(env.BatchName) == 0 {
 		errs = append(errs, fmt.Errorf("missed environment variable RADIX_BATCH_NAME"))
 	}

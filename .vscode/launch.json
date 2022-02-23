@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "env": {
+                "LOG_LEVEL":"DEBUG",
+                "RADIX_DNS_ZONE":"dev.radix.equinor.com",
+                "RADIX_CONTAINER_REGISTRY":"radixdev.azurecr.io",
+                "RADIX_ACTIVE_CLUSTER_EGRESS_IPS":"127.0.0.1",
+                "RADIX_ENVIRONMENT":"qa",
+                "RADIX_APP":"radix-job-demo",
+                "RADIX_DEPLOYMENT": "qa-qcd3b-cg6u3hnk",
+                "RADIX_COMPONENT": "compute",
+                "RADIX_BATCH_NAME": "test-batch1",
+                "RADIX_BATCH_SCHEDULE_DESCRIPTION_PATH": "/mnt/secrets/test-batch1",
+                "RADIXOPERATOR_APP_ENV_LIMITS_DEFAULT_CPU": "50m",
+                "RADIXOPERATOR_APP_ENV_LIMITS_DEFAULT_MEMORY": "500M"
+            }
+        }
+    ]
+}
