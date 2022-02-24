@@ -57,4 +57,4 @@ require (
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )
 
-replace github.com/equinor/radix-job-scheduler => github.com/equinor/radix-job-scheduler v1.4.4-0.20220223140219-387465230329
+replace github.com/equinor/radix-job-scheduler => github.com/equinor/radix-job-scheduler v1.4.4-0.20220224143952-e1aa43cdc287
