@@ -19,7 +19,7 @@ func RunBatchJobs(kubeUtil *kube.Kube, env *models.Env, batchScheduleDescription
 		description := jobScheduleDescription
 		applyDefaultJobDescriptionProperties(&description, batchScheduleDescription)
 		jobCount++
-		runJob(jobModel, description, jobCount)
+		runJob(env.BatchName, jobModel, description, jobCount)
 	}
 	return nil
 }
@@ -37,14 +37,15 @@ func applyDefaultJobDescriptionProperties(jobDescription *apiModels.JobScheduleD
 	}
 }
 
-func runJob(jobModel jobApi.Job, jobScheduleDescription apiModels.JobScheduleDescription, jobCount int) {
+func runJob(batchName string, jobModel jobApi.Job, jobScheduleDescription apiModels.JobScheduleDescription,
+	jobCount int) {
 	jobName := fmt.Sprintf("#%d", jobCount)
 	jobId := strings.TrimSpace(jobScheduleDescription.JobId)
 	if len(jobId) > 0 {
 		jobName = fmt.Sprintf("%s job-id: '%s'", jobName, jobScheduleDescription.JobId)
 	}
 	log.Infof("Start the job %s", jobName)
-	jobStatus, err := jobModel.CreateJob(&jobScheduleDescription)
+	jobStatus, err := jobModel.CreateJob(&jobScheduleDescription, batchName)
 	if err != nil {
 		log.Errorf("failed start the job %s: %v", jobName, err)
 		return

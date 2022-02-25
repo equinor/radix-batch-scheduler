@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/equinor/radix-common v1.1.10
-	github.com/equinor/radix-job-scheduler v1.5.1
+	github.com/equinor/radix-job-scheduler v1.5.2
 	github.com/equinor/radix-operator v1.19.7
 	github.com/sirupsen/logrus v1.8.1
 )
