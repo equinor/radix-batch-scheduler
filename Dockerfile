@@ -26,10 +26,11 @@ RUN golint `go list ./...` && \
 # Build radix api go project
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -a -installsuffix cgo -o /usr/local/bin/radix-batch-scheduler
 
-#FROM scratch
-#COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-#COPY --from=builder /etc/passwd /etc/passwd
-#COPY --from=builder /usr/local/bin/radix-batch-scheduler /usr/local/bin/radix-batch-scheduler
+FROM scratch
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /usr/local/bin/radix-batch-scheduler /usr/local/bin/radix-batch-scheduler
+COPY --from=builder /bin/bash /bin/bash
 
 USER 1000
 
