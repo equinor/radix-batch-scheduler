@@ -4,8 +4,8 @@ go 1.17
 
 require (
 	github.com/equinor/radix-common v1.1.10
-	github.com/equinor/radix-job-scheduler v1.4.2
-	github.com/equinor/radix-operator v1.19.3
+	github.com/equinor/radix-job-scheduler v1.5.1
+	github.com/equinor/radix-operator v1.19.7
 	github.com/sirupsen/logrus v1.8.1
 )
 
@@ -55,9 +55,4 @@ require (
 	sigs.k8s.io/secrets-store-csi-driver v1.0.1 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.2.0 // indirect
-)
-
-replace (
-	github.com/equinor/radix-operator => github.com/equinor/radix-operator v1.19.6-0.20220225070507-4f7b0a9108eb
-	github.com/equinor/radix-job-scheduler => github.com/equinor/radix-job-schedule v1.5.0
 )
