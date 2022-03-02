@@ -39,6 +39,27 @@ func (env *Env) ValidateExpected() error {
 	if len(env.Common.RadixComponentName) == 0 {
 		errs = append(errs, fmt.Errorf("missed environment variable RADIX_COMPONENT"))
 	}
+	if len(env.Common.RadixDefaultCpuLimit) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIXOPERATOR_APP_ENV_LIMITS_DEFAULT_CPU"))
+	}
+	if len(env.Common.RadixDefaultMemoryLimit) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIXOPERATOR_APP_ENV_LIMITS_DEFAULT_MEMORY"))
+	}
+	if len(env.Common.RadixDNSZone) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIX_DNS_ZONE"))
+	}
+	if len(env.Common.RadixClusterName) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIX_CLUSTERNAME"))
+	}
+	if len(env.Common.RadixEnvironment) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIX_ENVIRONMENT"))
+	}
+	if len(env.Common.RadixDeploymentName) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIX_DEPLOYMENT"))
+	}
+	if len(env.Common.RadixContainerRegistry) == 0 {
+		errs = append(errs, fmt.Errorf("missed environment variable RADIX_CONTAINER_REGISTRY"))
+	}
 	if len(errs) == 0 {
 		return nil
 	}

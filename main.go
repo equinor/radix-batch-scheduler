@@ -4,18 +4,24 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/equinor/radix-batch-scheduler/models"
-	jobApi "github.com/equinor/radix-job-scheduler/api/jobs"
-	apiModels "github.com/equinor/radix-job-scheduler/models"
+	batchApi "github.com/equinor/radix-job-scheduler/api/batches"
 	"github.com/equinor/radix-operator/pkg/apis/kube"
 	"github.com/equinor/radix-operator/pkg/apis/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/go-co-op/gocron"
 	"io/ioutil"
 	"os"
+	"time"
+
+	"github.com/equinor/radix-batch-scheduler/api"
+	"github.com/equinor/radix-batch-scheduler/models"
+	apiModels "github.com/equinor/radix-job-scheduler/models"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	env := models.New()
+	log.SetLevel(log.DebugLevel)
+
 	if err := env.ValidateExpected(); err != nil {
 		log.Error(err.Error())
 		return
@@ -30,17 +36,39 @@ func main() {
 		return
 	}
 	if len(batchScheduleDescription.JobScheduleDescriptions) == 0 {
-		log.Info("JobScheduleDescriptions list is empty")
+		log.Info("required JobScheduleDescriptions list is empty")
 		return
 	}
 
-	err = runJobs(env, batchScheduleDescription)
+	kubeUtil := getKubeUtil()
+
+	err = api.RunBatchJobs(kubeUtil, env, batchScheduleDescription)
 	if err != nil {
 		log.Error(err.Error())
 		return
 	}
 
+	waitWhileAllBatchJobsAreCompleted(kubeUtil, env)
+
 	log.Info("All jobs processed.")
+}
+
+func waitWhileAllBatchJobsAreCompleted(kubeUtil *kube.Kube, env *models.Env) {
+	batch := batchApi.New(env.Common, kubeUtil, kubeUtil.KubeClient(), kubeUtil.RadixClient())
+	done := make(chan bool)
+	waitScheduler := gocron.NewScheduler(time.UTC).SingletonMode()
+	waitScheduler.Every(10).Seconds().Do(func() {
+		api.CheckIfAllJobsAreCompleted(batch, env, done)
+	})
+	waitScheduler.StartAsync()
+	<-done
+	waitScheduler.Stop()
+}
+
+func getKubeUtil() *kube.Kube {
+	kubeClient, radixClient, _, secretProviderClient := utils.GetKubernetesClient()
+	kubeUtil, _ := kube.New(kubeClient, radixClient, secretProviderClient)
+	return kubeUtil
 }
 
 func getBatchScheduleDescription(env *models.Env) (*apiModels.BatchScheduleDescription, error) {
@@ -59,28 +87,4 @@ func getBatchScheduleDescription(env *models.Env) (*apiModels.BatchScheduleDescr
 		return nil, fmt.Errorf("failed to read the BatchScheduleDescription from the secret: %v", err)
 	}
 	return batchScheduleDescription, nil
-}
-
-func runJobs(env *models.Env, batchScheduleDescription *apiModels.BatchScheduleDescription) error {
-	kubeClient, radixClient, _, secretProviderClient := utils.GetKubernetesClient()
-	kubeUtil, err := kube.New(kubeClient, radixClient, secretProviderClient)
-	if err != nil {
-		return err
-	}
-	jobModel := jobApi.New(env.Common, kubeUtil, kubeClient, radixClient)
-	log.Infof("Run the batch '%s' of %d jobs", env.BatchName, len(batchScheduleDescription.JobScheduleDescriptions))
-	for _, jobScheduleDescription := range batchScheduleDescription.JobScheduleDescriptions {
-		runJob(jobModel, jobScheduleDescription)
-	}
-	return nil
-}
-
-func runJob(jobModel jobApi.Job, jobScheduleDescription apiModels.JobScheduleDescription) {
-	log.Infof("Start the job '%s'", jobScheduleDescription.JobId)
-	jobStatus, err := jobModel.CreateJob(&jobScheduleDescription)
-	if err != nil {
-		log.Errorf("failed start the job '%s': %v", jobScheduleDescription.JobId, err)
-		return
-	}
-	log.Infof("job '%s' has been started, job name: '%s'", jobScheduleDescription.JobId, jobStatus.Name)
 }

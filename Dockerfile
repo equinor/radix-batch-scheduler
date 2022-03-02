@@ -30,6 +30,7 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /usr/local/bin/radix-batch-scheduler /usr/local/bin/radix-batch-scheduler
+COPY --from=builder /bin/bash /bin/bash
 
 USER 1000
 
