@@ -2,15 +2,13 @@ package api
 
 import (
 	"fmt"
-	"strings"
-	"time"
-
 	"github.com/equinor/radix-batch-scheduler/models"
 	batchApi "github.com/equinor/radix-job-scheduler/api/batches"
 	jobApi "github.com/equinor/radix-job-scheduler/api/jobs"
 	apiModels "github.com/equinor/radix-job-scheduler/models"
 	"github.com/equinor/radix-operator/pkg/apis/kube"
 	log "github.com/sirupsen/logrus"
+	"strings"
 )
 
 var (
@@ -26,8 +24,7 @@ func RunBatchJobs(kubeUtil *kube.Kube, env *models.Env, batchScheduleDescription
 		description := jobScheduleDescription
 		applyDefaultJobDescriptionProperties(&description, batchScheduleDescription)
 		jobCount++
-		go runJob(env.BatchName, jobHandler, description, jobCount)
-		time.Sleep(time.Second * 1) //temporary solution to avoid k8s api throttling
+		runJob(env.BatchName, jobHandler, description, jobCount)
 	}
 	return nil
 }
