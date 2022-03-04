@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/equinor/radix-common v1.1.10
-	github.com/equinor/radix-job-scheduler v1.5.9
+	github.com/equinor/radix-job-scheduler v1.5.11
 	github.com/equinor/radix-operator v1.19.9
 	github.com/go-co-op/gocron v1.13.0
 	github.com/sirupsen/logrus v1.8.1

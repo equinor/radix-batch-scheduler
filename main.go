@@ -35,8 +35,14 @@ func main() {
 		log.Error(err.Error())
 		return
 	}
-	if len(batchScheduleDescription.JobScheduleDescriptions) == 0 {
-		log.Info("required JobScheduleDescriptions list is empty")
+	requestedJobCount := len(batchScheduleDescription.JobScheduleDescriptions)
+	if requestedJobCount == 0 {
+		log.Error("required JobScheduleDescriptions list is empty")
+		return
+	}
+	maxJobsCount := 500
+	if requestedJobCount > maxJobsCount {
+		log.Errorf("maximum allowed jobs in a batch is %d, but %d requested", maxJobsCount, requestedJobCount)
 		return
 	}
 

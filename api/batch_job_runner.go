@@ -2,14 +2,13 @@ package api
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/equinor/radix-batch-scheduler/models"
 	batchApi "github.com/equinor/radix-job-scheduler/api/batches"
 	jobApi "github.com/equinor/radix-job-scheduler/api/jobs"
 	apiModels "github.com/equinor/radix-job-scheduler/models"
 	"github.com/equinor/radix-operator/pkg/apis/kube"
 	log "github.com/sirupsen/logrus"
+	"strings"
 )
 
 var (
@@ -18,14 +17,14 @@ var (
 
 //RunBatchJobs Run batch jobs
 func RunBatchJobs(kubeUtil *kube.Kube, env *models.Env, batchScheduleDescription *apiModels.BatchScheduleDescription) error {
-	jobModel := jobApi.New(env.Common, kubeUtil)
+	jobHandler := jobApi.New(env.Common, kubeUtil)
 	log.Infof("Run the batch '%s' of %d jobs", env.BatchName, len(batchScheduleDescription.JobScheduleDescriptions))
 	jobCount := 0
 	for _, jobScheduleDescription := range batchScheduleDescription.JobScheduleDescriptions {
 		description := jobScheduleDescription
 		applyDefaultJobDescriptionProperties(&description, batchScheduleDescription)
 		jobCount++
-		runJob(env.BatchName, jobModel, description, jobCount)
+		runJob(env.BatchName, jobHandler, description, jobCount)
 	}
 	return nil
 }
@@ -50,6 +49,9 @@ func CheckIfAllJobsAreCompleted(batch batchApi.BatchHandler, env *models.Env, do
 }
 
 func applyDefaultJobDescriptionProperties(jobDescription *apiModels.JobScheduleDescription, batchScheduleDescription *apiModels.BatchScheduleDescription) {
+	if batchScheduleDescription == nil || batchScheduleDescription.DefaultRadixJobComponentConfig == nil {
+		return
+	}
 	batchDescription := *batchScheduleDescription
 	if jobDescription.RadixJobComponentConfig.Node == nil {
 		jobDescription.RadixJobComponentConfig.Node = batchDescription.DefaultRadixJobComponentConfig.Node
@@ -62,7 +64,7 @@ func applyDefaultJobDescriptionProperties(jobDescription *apiModels.JobScheduleD
 	}
 }
 
-func runJob(batchName string, jobModel jobApi.JobHandler, jobScheduleDescription apiModels.JobScheduleDescription,
+func runJob(batchName string, jobHandler jobApi.JobHandler, jobScheduleDescription apiModels.JobScheduleDescription,
 	jobCount int) {
 	jobName := fmt.Sprintf("#%d", jobCount)
 	jobId := strings.TrimSpace(jobScheduleDescription.JobId)
@@ -70,7 +72,7 @@ func runJob(batchName string, jobModel jobApi.JobHandler, jobScheduleDescription
 		jobName = fmt.Sprintf("%s job-id: '%s'", jobName, jobScheduleDescription.JobId)
 	}
 	log.Infof("Start the job %s", jobName)
-	jobStatus, err := jobModel.CreateJob(&jobScheduleDescription, batchName)
+	jobStatus, err := jobHandler.CreateJob(&jobScheduleDescription, batchName)
 	if err != nil {
 		log.Errorf("failed start the job %s: %v", jobName, err)
 		return
