@@ -36,6 +36,7 @@ jobs:
       - name: 'Build docker image'
         run: |
           docker build -t radixprod.azurecr.io/$IMAGE_NAME:release-latest .
+          docker build -t radixprod.azurecr.io/$IMAGE_NAME:main-latest .
       - name: 'Login to prod'
         uses: azure/login@v1
         with:
@@ -46,3 +47,4 @@ jobs:
         run: |
           az acr login --name radixprod
           docker push radixprod.azurecr.io/$IMAGE_NAME:release-latest
+          docker push radixprod.azurecr.io/$IMAGE_NAME:main-latest
